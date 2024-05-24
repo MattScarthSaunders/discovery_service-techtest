@@ -1,7 +1,7 @@
-import assert from "assert";
+import assert from 'assert';
 
-describe("init", () => {
-  it("passes", () => {
-    assert.equal(true, true);
-  });
+describe('init', () => {
+    it('passes', () => {
+        assert.equal(true, true);
+    });
 });
