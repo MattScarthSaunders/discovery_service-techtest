@@ -67,4 +67,11 @@ export class ClientAppsRepo {
 
         return result;
     }
+
+    async getInstances(group: string) {
+        const result = this.collection
+            .find({ group }, { projection: { _id: 0 } })
+            .toArray();
+        return result;
+    }
 }

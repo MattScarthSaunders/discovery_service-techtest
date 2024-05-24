@@ -24,6 +24,16 @@ export const ClientAppResponse = new Schema<ClientApp>({
     },
 });
 
+export const GroupResponse = new Schema<ClientApp[]>({
+    schema: {
+        type: 'array',
+        items: {
+            type: 'object',
+            properties: ClientAppResponse.schema.properties,
+        },
+    },
+});
+
 export interface GroupSummary {
     group: string;
     instances: number;

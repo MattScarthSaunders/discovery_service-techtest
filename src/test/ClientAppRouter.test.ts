@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import supertest from 'supertest';
 
 import { App } from '../main/app.js';
-import { GroupSummary } from '../main/schema/Response.js';
+import { ClientApp, GroupSummary } from '../main/schema/Response.js';
 import { ClientAppSeed } from './seed/ClientAppSeed.js';
 
 describe('ClientAppRouter', () => {
@@ -178,7 +178,49 @@ describe('ClientAppRouter', () => {
             const request = supertest(app.httpServer.callback());
             seed.clear();
 
-            await request.get('/howdy').expect(404);
+            await request.get('/test/howdy').expect(404);
+        });
+    });
+
+    describe('GET /:group', () => {
+        const seed = new ClientAppSeed();
+        beforeEach(async () => await seed.run());
+        afterEach(async () => await seed.clear());
+
+        it('Responds with 200', async () => {
+            const request = supertest(app.httpServer.callback());
+            await request.get('/particle-accelerator').expect(200);
+        });
+
+        it('Responds with list of client app instances', async () => {
+            const request = supertest(app.httpServer.callback());
+            const res = await request.get('/particle-accelerator');
+
+            expect(res.body.length).to.equal(2);
+            expect(res.body[0]).to.have.keys([
+                'createdAt',
+                'updatedAt',
+                'id',
+                'group',
+                'meta',
+            ]);
+        });
+
+        it('Includes correct instances for the group', async () => {
+            const request = supertest(app.httpServer.callback());
+            const res = await request.get('/particle-accelerator');
+
+            res.body.forEach((instance: ClientApp) => {
+                expect(instance.group).to.equal('particle-accelerator');
+            });
+        });
+
+        it('Responds with empty list if no instances', async () => {
+            const request = supertest(app.httpServer.callback());
+            seed.clear();
+            const res = await request.get('/particle-accelerator');
+
+            expect(res.body.length).to.equal(0);
         });
     });
 });
