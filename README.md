@@ -12,9 +12,10 @@
 
 ### Public Env
 
-The following are required environment variables:
+The following environment variables are needed, though some have default values if not provided:
 
 -   MONGO_URL= < url of your mongo database instance >
+-   MONGO_DB_NAME= < desired name of mongo database > [**optional**]
 
 ### App
 
@@ -28,18 +29,17 @@ I recommend using the provided script: `npm run setup:db` as this will populate 
 
 ## Run App
 
-`npm run compile`
-`npm start`
+To run the server, you must first compile it with `npm run compile`, then it can be run with `npm start`. You should see confirmation in the terminal that it is listening.
 
 ## Stop App
 
-Kill the app in the terminal with your usual command (`ctrl/cmd+c` usually).
+Kill the app in the terminal with your usual command (`ctrl+c` usually). Again, you should see confirmation in the terminal, this time that it has ceased running.
 
 Run `npm run stop:db` to stop the mongo container and remove it. (Does not remove the mongo image)
 
 ## Run Tests
 
-`npm test`
+All tests can be run with `npm test`.
 
 ## Other notes
 
