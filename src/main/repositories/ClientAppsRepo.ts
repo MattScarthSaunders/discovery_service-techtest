@@ -42,7 +42,7 @@ export class ClientAppsRepo {
         return result;
     }
 
-    async getGroups() {
+    async getGroupSummary() {
         const result = await this.collection
             .aggregate([
                 {
@@ -68,10 +68,15 @@ export class ClientAppsRepo {
         return result;
     }
 
-    async getInstances(group: string) {
+    async getGroup(group: string) {
         const result = this.collection
             .find({ group }, { projection: { _id: 0 } })
             .toArray();
         return result;
+    }
+
+    async deleteInstance(group: string, id: string) {
+        const res = this.collection.deleteOne({ group, id });
+        return res;
     }
 }

@@ -223,4 +223,56 @@ describe('ClientAppRouter', () => {
             expect(res.body.length).to.equal(0);
         });
     });
+
+    describe('Delete /:group/:id', () => {
+        const seed = new ClientAppSeed();
+        beforeEach(async () => await seed.run());
+        afterEach(async () => await seed.clear());
+
+        it('Responds with 204', async () => {
+            const request = supertest(app.httpServer.callback());
+            const group = await request.get('/particle-accelerator');
+
+            const toDelete = group.body[0];
+
+            await request
+                .delete(`/${toDelete.group}/${toDelete.id}`)
+                .expect(204);
+        });
+
+        it('Removes an instance', async () => {
+            const request = supertest(app.httpServer.callback());
+            const group = await request.get('/particle-accelerator');
+
+            const toDelete = group.body[0];
+
+            await request
+                .delete(`/${toDelete.group}/${toDelete.id}`)
+                .expect(204);
+
+            const updatedGroup = await request.get('/particle-accelerator');
+
+            const instance = updatedGroup.body.find(
+                (el: ClientApp) => el.id === toDelete.id
+            );
+
+            expect(instance).to.equal(undefined);
+        });
+
+        it('Responds with 404 if not found but valid id', async () => {
+            const request = supertest(app.httpServer.callback());
+
+            await request
+                .delete(`/particle-accelerator/${randomUUID()}`)
+                .expect(404);
+        });
+
+        it('Responds with 404 if unknown group/group empty', async () => {
+            const request = supertest(app.httpServer.callback());
+
+            await request
+                .delete(`/hello-there-test-group/${randomUUID()}`)
+                .expect(404);
+        });
+    });
 });

@@ -1,4 +1,11 @@
-import { BodyParam, Get, PathParam, Post, Router } from '@ubio/framework';
+import {
+    BodyParam,
+    Delete,
+    Get,
+    PathParam,
+    Post,
+    Router,
+} from '@ubio/framework';
 import { dep } from 'mesh-ioc';
 
 import { ClientAppsRepo } from '../repositories/ClientAppsRepo.js';
@@ -40,7 +47,7 @@ export class ClientAppRouter extends Router {
         },
     })
     async getGroupSummary() {
-        return this.groups.getGroups();
+        return this.groups.getGroupSummary();
     }
 
     @Get({
@@ -54,6 +61,21 @@ export class ClientAppRouter extends Router {
     async getGroup(
         @PathParam('group', { schema: { type: 'string' } }) group: string
     ) {
-        return this.groups.getInstances(group);
+        return this.groups.getGroup(group);
+    }
+
+    @Delete({ path: '/{group}/{id}' })
+    async deleteInstance(
+        @PathParam('group', { schema: { type: 'string' } }) group: string,
+        @PathParam('id', { schema: { type: 'string', format: 'uuid' } })
+        id: string
+    ) {
+        const res = await this.groups.deleteInstance(group, id);
+
+        if (res.deletedCount === 0) {
+            this.ctx.status = 404;
+        } else {
+            this.ctx.status = 204;
+        }
     }
 }
