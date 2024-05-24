@@ -20,6 +20,7 @@
         "start": "node out/bin/serve",
         "dev": "npm run clean && tsc -w",
         "lint": "eslint --ext=.js,.ts --cache .",
+        "lint-fix": "eslint . --fix",
         "clean": "rm -rf out",
         "compile": "npm run clean && tsc",
         "test": "NODE_ENV=test LOG_LEVEL=mute mocha",
@@ -42,6 +43,7 @@
         "reflect-metadata": "^0.1.14"
     },
     "devDependencies": {
+        "@faker-js/faker": "^8.4.1",
         "@nodescript/eslint-config": "^1.2.0",
         "@types/chai": "^4.3.16",
         "@types/mocha": "^10.0.6",

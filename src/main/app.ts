@@ -1,8 +1,9 @@
 import { Application } from '@ubio/framework';
 import { MongoDb } from '@ubio/framework/modules/mongodb';
 import { dep } from 'mesh-ioc';
+
+import { ClientAppsRepo } from './repositories/ClientAppsRepo.js';
 import { ClientAppRouter } from './routes/ClientAppRouter.js';
-import { GroupsRepo } from './repositories/GroupsRepo.js';
 
 export class App extends Application {
     @dep() private mongoDb!: MongoDb;
@@ -18,7 +19,7 @@ export class App extends Application {
     override createHttpRequestScope() {
         const mesh = super.createHttpRequestScope();
         mesh.service(ClientAppRouter);
-        mesh.service(GroupsRepo);
+        mesh.service(ClientAppsRepo);
         return mesh;
     }
 

@@ -1,7 +1,10 @@
-import supertest from 'supertest';
 import { expect } from 'chai';
-import { App } from '../main/app.js';
 import { randomUUID } from 'crypto';
+import supertest from 'supertest';
+
+import { App } from '../main/app.js';
+import { GroupSummary } from '../main/schema/Response.js';
+import { ClientAppSeed } from './seed/ClientAppSeed.js';
 
 describe('ClientAppRouter', () => {
     const app = new App();
@@ -11,8 +14,8 @@ describe('ClientAppRouter', () => {
 
     describe('Post /:group/:id', () => {
         it('Has status: 201', async () => {
-            const uuid = randomUUID();
             const request = supertest(app.httpServer.callback());
+            const uuid = randomUUID();
 
             await request.post(`/test/${uuid}`).send({ meta: {} }).expect(201);
         });
@@ -40,13 +43,13 @@ describe('ClientAppRouter', () => {
 
         it('Meta data updated in place', async () => {
             const uuid = randomUUID();
-            const route = `/test/${uuid}`;
-
             const request = supertest(app.httpServer.callback());
 
+            const route = `/test/${uuid}`;
+
             const res = await request.post(route).send({ meta: {} });
-            expect(res.body.meta).to.be.a('object');
-            expect(res.body.meta).to.be.empty;
+            expect(res.body.meta).to.be.an('object');
+            expect(res.body.meta).to.deep.equal({});
 
             const res2 = await request
                 .post(route)
@@ -54,8 +57,8 @@ describe('ClientAppRouter', () => {
             expect(res2.body.meta).to.deep.equal({ test: 123 });
 
             const res3 = await request.post(route).send({ meta: {} });
-            expect(res3.body.meta).to.be.a('object');
-            expect(res3.body.meta).to.be.empty;
+            expect(res3.body.meta).to.be.an('object');
+            expect(res3.body.meta).to.deep.equal({});
         });
 
         it('Updates existing document with new date if already existing.', async () => {
@@ -96,6 +99,86 @@ describe('ClientAppRouter', () => {
                 .expect(404);
 
             expect(res.body.message).to.equal('Route not found');
+        });
+    });
+
+    describe('Get /', () => {
+        const seed = new ClientAppSeed();
+        beforeEach(async () => await seed.run());
+        afterEach(async () => await seed.clear());
+
+        it('Responds with 200', async () => {
+            const request = supertest(app.httpServer.callback());
+            await request.get('/').expect(200);
+        });
+
+        it('Responds with correctly formatted response', async () => {
+            const request = supertest(app.httpServer.callback());
+            const res = await request.get('/').expect(200);
+
+            expect(res.body.length).to.equal(6);
+            res.body.forEach((element: GroupSummary) => {
+                expect(element).to.have.keys([
+                    'instances',
+                    'group',
+                    'latestUpdatedAt',
+                    'createdAt',
+                ]);
+            });
+        });
+
+        it('Correctly counts the number of instances in a group', async () => {
+            const request = supertest(app.httpServer.callback());
+
+            await seed.upsertSingle('newGroup', randomUUID(), {});
+            const res = await request.get('/');
+
+            let newInstance = res.body.find(
+                (el: GroupSummary) => el.group === 'newGroup'
+            );
+
+            expect(newInstance.instances).to.equal(1);
+
+            await seed.upsertSingle('newGroup', randomUUID(), {});
+            const res2 = await request.get('/');
+
+            newInstance = res2.body.find(
+                (el: GroupSummary) => el.group === 'newGroup'
+            );
+
+            expect(newInstance.instances).to.equal(2);
+        });
+
+        it('Correctly identifies the latest update time', async () => {
+            const request = supertest(app.httpServer.callback());
+
+            const res = await request.get('/');
+            const initialTime = res.body[0].latestUpdatedAt;
+
+            await seed.upsertSingle(res.body[0].group, randomUUID(), {});
+
+            const res2 = await request.get('/');
+            const newInstance = res2.body.find(
+                (el: GroupSummary) => el.group === res.body[0].group
+            );
+            const newTime = newInstance.latestUpdatedAt;
+
+            expect(initialTime).to.be.lessThan(newTime);
+        });
+
+        it('Responds with empty array if no groups', async () => {
+            const request = supertest(app.httpServer.callback());
+            seed.clear();
+
+            const res = await request.get('/');
+            expect(res.body.length).to.equal(0);
+        });
+
+        it('Responds with 404 on invalid path', async () => {
+            const request = supertest(app.httpServer.callback());
+            seed.clear();
+
+            await request.get('/howdy').expect(404);
         });
     });
 });

@@ -1,10 +1,11 @@
-import { Router, Post, BodyParam, PathParam } from '@ubio/framework';
+import { BodyParam, Get, PathParam, Post, Router } from '@ubio/framework';
 import { dep } from 'mesh-ioc';
-import { GroupsRepo } from '../repositories/GroupsRepo.js';
-import { ClientAppResponse } from '../schema/Response.js';
+
+import { ClientAppsRepo } from '../repositories/ClientAppsRepo.js';
+import { ClientAppResponse, GroupSummaryResponse } from '../schema/Response.js';
 
 export class ClientAppRouter extends Router {
-    @dep() groups!: GroupsRepo;
+    @dep() groups!: ClientAppsRepo;
 
     @Post({
         path: '/{group}/{id}',
@@ -24,5 +25,17 @@ export class ClientAppRouter extends Router {
         const res = await this.groups.upsertAppInstance(group, id, meta);
         this.ctx.status = 201;
         return res;
+    }
+
+    @Get({
+        path: '/',
+        responses: {
+            200: {
+                schema: GroupSummaryResponse.schema,
+            },
+        },
+    })
+    async getGroupSummary() {
+        return this.groups.getGroups();
     }
 }

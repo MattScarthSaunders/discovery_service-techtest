@@ -2,7 +2,7 @@ import { MongoDb } from '@ubio/framework/modules/mongodb';
 import { dep } from 'mesh-ioc';
 import { ReturnDocument } from 'mongodb';
 
-export class GroupsRepo {
+export class ClientAppsRepo {
     @dep() mongoDb!: MongoDb;
 
     protected get collection() {
@@ -38,6 +38,32 @@ export class GroupsRepo {
             update,
             options
         );
+
+        return result;
+    }
+
+    async getGroups() {
+        const result = await this.collection
+            .aggregate([
+                {
+                    $group: {
+                        _id: '$group',
+                        instances: { $sum: 1 },
+                        createdAt: { $min: '$createdAt' },
+                        latestUpdatedAt: { $max: '$updatedAt' },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        group: '$_id',
+                        instances: 1,
+                        createdAt: 1,
+                        latestUpdatedAt: 1,
+                    },
+                },
+            ])
+            .toArray();
 
         return result;
     }

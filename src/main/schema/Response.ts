@@ -23,3 +23,25 @@ export const ClientAppResponse = new Schema<ClientApp>({
         required: ['id', 'group'],
     },
 });
+
+export interface GroupSummary {
+    group: string;
+    instances: number;
+    createdAt: number;
+    lastUpdatedAt: number;
+}
+
+export const GroupSummaryResponse = new Schema<GroupSummary[]>({
+    schema: {
+        type: 'array',
+        items: {
+            type: 'object',
+            properties: {
+                group: { type: 'string' },
+                instances: { type: 'number' },
+                createdAt: { type: 'number' },
+                lastUpdatedAt: { type: 'number' },
+            },
+        },
+    },
+});
