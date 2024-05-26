@@ -1,14 +1,24 @@
 import { Schema } from '@ubio/framework';
 
+export interface MetaData {
+    [key: string]: any;
+}
+
 export interface ClientApp {
     id: string;
     group: string;
     createdAt: number;
     updatedAt: number;
-    meta: {
-        [key: string]: any;
-    };
+    meta: MetaData;
 }
+
+export const MetaData = new Schema<MetaData>({
+    schema: {
+        type: 'object',
+        properties: {},
+        optional: true,
+    },
+});
 
 export const ClientAppResponse = new Schema<ClientApp>({
     schema: {
@@ -18,9 +28,8 @@ export const ClientAppResponse = new Schema<ClientApp>({
             group: { type: 'string' },
             createdAt: { type: 'number' },
             updatedAt: { type: 'number' },
-            meta: { type: 'object', properties: {} },
+            meta: MetaData.schema,
         },
-        required: ['id', 'group'],
     },
 });
 

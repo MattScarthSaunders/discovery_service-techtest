@@ -8,6 +8,8 @@ import { ClientAppSeed } from './seed/ClientAppSeed.js';
 
 describe('ClientAppRouter', () => {
     const app = new App();
+    app.mesh.service(ClientAppSeed);
+    const seed = app.mesh.resolve(ClientAppSeed);
 
     beforeEach(async () => await app.start());
     afterEach(async () => await app.stop());
@@ -103,7 +105,6 @@ describe('ClientAppRouter', () => {
     });
 
     describe('Get /', () => {
-        const seed = new ClientAppSeed();
         beforeEach(async () => await seed.run());
         afterEach(async () => await seed.clear());
 
@@ -183,7 +184,6 @@ describe('ClientAppRouter', () => {
     });
 
     describe('GET /:group', () => {
-        const seed = new ClientAppSeed();
         beforeEach(async () => await seed.run());
         afterEach(async () => await seed.clear());
 
@@ -225,7 +225,6 @@ describe('ClientAppRouter', () => {
     });
 
     describe('Delete /:group/:id', () => {
-        const seed = new ClientAppSeed();
         beforeEach(async () => await seed.run());
         afterEach(async () => await seed.clear());
 

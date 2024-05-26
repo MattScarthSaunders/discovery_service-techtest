@@ -2,7 +2,7 @@ import { MongoDb } from '@ubio/framework/modules/mongodb';
 import { dep } from 'mesh-ioc';
 import { ReturnDocument } from 'mongodb';
 
-export class ClientAppsRepo {
+export class ClientAppRepo {
     @dep() mongoDb!: MongoDb;
 
     protected get collection() {

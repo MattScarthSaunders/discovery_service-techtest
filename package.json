@@ -17,18 +17,18 @@
         "lint"
     ],
     "scripts": {
-        "start": "node out/bin/serve",
-        "dev": "npm run clean && tsc -w",
+        "start": "docker-compose -f docker/docker-compose.yml up",
+        "stop": "docker-compose -f docker/docker-compose.yml down",
+        "start:dev": "bash scripts/run_dev.sh",
+        "stop:dev": "docker-compose -f docker/docker-compose.dev.yml down",
         "lint": "eslint --ext=.js,.ts --cache .",
         "lint-fix": "eslint . --fix",
         "clean": "rm -rf out",
         "compile": "npm run clean && tsc",
-        "test": "NODE_ENV=test LOG_LEVEL=mute mocha",
+        "test": "bash scripts/run_tests.sh",
         "docs": "npm run docs:openapi && npm run docs:api",
         "docs:openapi": "generate-openapi > openapi.json",
-        "docs:api": "generate-docs > API.md",
-        "start:db": "bash scripts/setup_container.sh",
-        "stop:db": "bash scripts/stop_container.sh"
+        "docs:api": "generate-docs > API.md"
     },
     "author": "",
     "license": "ISC",

@@ -1,20 +1,15 @@
 import { faker } from '@faker-js/faker';
-import { Application } from '@ubio/framework';
 import { MongoDb } from '@ubio/framework/modules/mongodb';
 import { randomUUID } from 'crypto';
 import { dep } from 'mesh-ioc';
 import { ReturnDocument } from 'mongodb';
 
-export class ClientAppSeed extends Application {
-    private seedDate = new Date('2020-01-01T12:00:00Z').getTime();
+export class ClientAppSeed {
+    private seedDate;
     @dep() private mongoDb!: MongoDb;
 
-    override createGlobalScope() {
-        const mesh = super.createGlobalScope();
-
-        mesh.service(MongoDb);
-
-        return mesh;
+    constructor(dateMs: number = new Date('2020-01-01T12:00:00Z').getTime()) {
+        this.seedDate = dateMs;
     }
 
     protected get collection() {

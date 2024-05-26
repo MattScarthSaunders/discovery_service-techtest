@@ -1,0 +1,9 @@
+services:
+    mongodb_test:
+        image: mongodb/mongodb-community-server:latest
+        container_name: mongodb_test
+        command: mongod --quiet --logpath /dev/null
+        ports:
+            - '27017:27017'
+        logging:
+            driver: none
