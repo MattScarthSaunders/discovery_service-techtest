@@ -83,6 +83,7 @@ export class ClientAppRouter extends Router {
 
         if (result.deletedCount === 0) {
             this.ctx.status = 404;
+            this.ctx.body = { message: 'Instance not found.' };
         } else {
             this.ctx.status = 204;
         }

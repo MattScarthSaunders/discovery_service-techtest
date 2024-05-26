@@ -4,7 +4,7 @@ import { dep } from 'mesh-ioc';
 
 import { InstanceRepo } from './repositories/InstanceRepo.js';
 import { ClientAppRouter } from './routes/ClientAppRouter.js';
-import { ClientAppCleanupService } from './services/ClientAppCleanupService.js';
+import { InstanceCleanupService } from './services/InstanceCleanupService.js';
 
 export class App extends Application {
     @dep() private mongoDb!: MongoDb;
@@ -12,7 +12,7 @@ export class App extends Application {
     override createGlobalScope() {
         const mesh = super.createGlobalScope();
         mesh.service(MongoDb);
-        mesh.service(ClientAppCleanupService);
+        mesh.service(InstanceCleanupService);
         return mesh;
     }
 
@@ -24,12 +24,8 @@ export class App extends Application {
     }
 
     override async beforeStart() {
-        try {
-            await this.mongoDb.start();
-            this.logger.info(`Created DB: ${this.mongoDb.db.databaseName}`);
-        } catch (err) {
-            if (err instanceof Error) { throw new Error(err.message); }
-        }
+        await this.mongoDb.start();
+        this.logger.info(`Created DB: ${this.mongoDb.db.databaseName}`);
 
         await this.httpServer.startServer();
     }

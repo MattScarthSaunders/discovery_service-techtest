@@ -269,9 +269,11 @@ describe('ClientAppRouter', () => {
         it('Responds with 404 if unknown group/group empty', async () => {
             const request = supertest(app.httpServer.callback());
 
-            await request
+            const res = await request
                 .delete(`/hello-there-test-group/${randomUUID()}`)
                 .expect(404);
+
+            expect(res.body.message).to.equal('Instance not found.');
         });
     });
 });

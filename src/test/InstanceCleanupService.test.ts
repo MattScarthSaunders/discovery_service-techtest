@@ -2,14 +2,14 @@ import { expect } from 'chai';
 import supertest from 'supertest';
 
 import { App } from '../main/app.js';
-import { ClientAppCleanupService } from '../main/services/ClientAppCleanupService.js';
+import { InstanceCleanupService } from '../main/services/InstanceCleanupService.js';
 import { ClientAppSeed } from './seed/ClientAppSeed.js';
 
-describe('ClientAppCleanupService', () => {
+describe('InstanceCleanupService', () => {
     const app = new App();
     app.mesh.service(ClientAppSeed);
     const seed = app.mesh.resolve(ClientAppSeed);
-    const cleanupService = app.mesh.resolve(ClientAppCleanupService);
+    const cleanupService = app.mesh.resolve(InstanceCleanupService);
 
     beforeEach(async () => {
         await app.start();
