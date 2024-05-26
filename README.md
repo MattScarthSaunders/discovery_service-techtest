@@ -40,7 +40,7 @@ Both ways will log startup information in the terminal, including the port that 
 
 Kill the app in the terminal with your usual command (`ctrl+c` usually). Again, you should see confirmation in the terminal, this time that it has ceased running.
 
-Run `npm run stop:dev` if running in dev mode, or just `npm stop` if running containerised version.
+Run `npm stop` if running containerised version. Dev mode will auto-close
 
 ## Test
 
@@ -62,3 +62,16 @@ I have made the following assumptions for the sake of the test:
 ## Decisions
 
 -   Assuming a 30s heartbeat, I'm assigning a default expiry 'age' value of 3 minutes. This provides a balance between tolerating network instability, client load or other intermittent issues, and still ensuring that the service remains reasonably up-to-date.
+-   Mongo structure:
+
+    -   single collection ('instances'), as all primary data is related to the client app instances, and group data is all derived from this. Given small scope of the app, this seems appropriate.
+
+    Pros:
+
+    -   can achieve desired functionality using standard queries
+    -   avoids excess storage of data
+
+    Cons:
+
+    -   no group history
+    -   potentially slower response/query times on `GET /` endpoint given large numbers of instances.

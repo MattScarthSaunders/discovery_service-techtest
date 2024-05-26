@@ -13,7 +13,7 @@ export class ClientAppSeed {
     }
 
     protected get collection() {
-        return this.mongoDb.db.collection('groups');
+        return this.mongoDb.db.collection('instances');
     }
 
     private generateItems() {

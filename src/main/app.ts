@@ -2,7 +2,7 @@ import { Application } from '@ubio/framework';
 import { MongoDb } from '@ubio/framework/modules/mongodb';
 import { dep } from 'mesh-ioc';
 
-import { ClientAppRepo } from './repositories/ClientAppRepo.js';
+import { InstanceRepo } from './repositories/InstanceRepo.js';
 import { ClientAppRouter } from './routes/ClientAppRouter.js';
 import { ClientAppCleanupService } from './services/ClientAppCleanupService.js';
 
@@ -19,7 +19,7 @@ export class App extends Application {
     override createHttpRequestScope() {
         const mesh = super.createHttpRequestScope();
         mesh.service(ClientAppRouter);
-        mesh.service(ClientAppRepo);
+        mesh.service(InstanceRepo);
         return mesh;
     }
 
@@ -28,9 +28,7 @@ export class App extends Application {
             await this.mongoDb.start();
             this.logger.info(`Created DB: ${this.mongoDb.db.databaseName}`);
         } catch (err) {
-            this.logger.error(
-                'Failed to create database. Is the container running?'
-            );
+            if (err instanceof Error) { throw new Error(err.message); }
         }
 
         await this.httpServer.startServer();
@@ -39,7 +37,6 @@ export class App extends Application {
     override async afterStop() {
         await this.httpServer.stopServer();
 
-        this.logger.info(`Dropped DB: ${this.mongoDb.db.databaseName}`);
         await this.mongoDb.stop();
     }
 }

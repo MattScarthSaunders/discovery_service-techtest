@@ -8,7 +8,7 @@ import {
 } from '@ubio/framework';
 import { dep } from 'mesh-ioc';
 
-import { ClientAppRepo } from '../repositories/ClientAppRepo.js';
+import { InstanceRepo } from '../repositories/InstanceRepo.js';
 import {
     ClientAppResponse,
     GroupResponse,
@@ -17,7 +17,7 @@ import {
 } from '../schema/Response.js';
 
 export class ClientAppRouter extends Router {
-    @dep() groups!: ClientAppRepo;
+    @dep() instances!: InstanceRepo;
 
     @Post({
         path: '/{group}/{id}',
@@ -35,7 +35,7 @@ export class ClientAppRouter extends Router {
         @BodyParam('meta', { schema: { type: 'object' } })
         meta: MetaData
     ) {
-        const res = await this.groups.upsertAppInstance(group, id, meta);
+        const res = await this.instances.upsertInstance(group, id, meta);
         this.ctx.status = 201;
         return res;
     }
@@ -50,7 +50,7 @@ export class ClientAppRouter extends Router {
         },
     })
     async getGroupSummary() {
-        return this.groups.getGroupSummary();
+        return this.instances.getGroupSummary();
     }
 
     @Get({
@@ -62,10 +62,10 @@ export class ClientAppRouter extends Router {
             },
         },
     })
-    async getGroup(
+    async getInstancesByGroup(
         @PathParam('group', { schema: { type: 'string' } }) group: string
     ) {
-        return this.groups.getGroup(group);
+        return this.instances.getInstancesByGroup(group);
     }
 
     @Delete({
@@ -77,7 +77,7 @@ export class ClientAppRouter extends Router {
         @PathParam('id', { schema: { type: 'string', format: 'uuid' } })
         id: string
     ) {
-        const res = await this.groups.deleteInstance(group, id);
+        const res = await this.instances.deleteInstance(group, id);
 
         if (res.deletedCount === 0) {
             this.ctx.status = 404;

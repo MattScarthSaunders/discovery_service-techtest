@@ -2,41 +2,34 @@ import { MongoDb } from '@ubio/framework/modules/mongodb';
 import { dep } from 'mesh-ioc';
 import { ReturnDocument } from 'mongodb';
 
-export class ClientAppRepo {
+export class InstanceRepo {
     @dep() mongoDb!: MongoDb;
 
     protected get collection() {
-        return this.mongoDb.db.collection('groups');
+        return this.mongoDb.db.collection('instances');
     }
 
-    async upsertAppInstance(
+    async upsertInstance(
         group: string,
         id: string,
         additionalData: { [key: string]: any }
     ) {
-        const query = { group, id };
-
-        const update = {
-            $set: {
-                id,
-                group,
-                meta: additionalData,
-                updatedAt: Date.now(),
-            },
-            $setOnInsert: { createdAt: Date.now() },
-        };
-
-        const options = {
-            upsert: true,
-            returnOriginal: false,
-            returnDocument: ReturnDocument.AFTER,
-            projection: { _id: 0 },
-        };
-
         const result = await this.collection.findOneAndUpdate(
-            query,
-            update,
-            options
+            { group, id },
+            {
+                $set: {
+                    id,
+                    group,
+                    meta: additionalData,
+                    updatedAt: Date.now(),
+                },
+                $setOnInsert: { createdAt: Date.now() },
+            },
+            {
+                upsert: true,
+                returnDocument: ReturnDocument.AFTER,
+                projection: { _id: 0 },
+            }
         );
 
         return result;
@@ -68,7 +61,7 @@ export class ClientAppRepo {
         return result;
     }
 
-    async getGroup(group: string) {
+    async getInstancesByGroup(group: string) {
         const result = this.collection
             .find({ group }, { projection: { _id: 0 } })
             .toArray();

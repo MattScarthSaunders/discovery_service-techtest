@@ -8,19 +8,19 @@ export class ClientAppCleanupService {
     @dep() logger!: Logger;
 
     protected get collection() {
-        return this.mongoDb.db.collection('groups');
+        return this.mongoDb.db.collection('instances');
     }
 
     async startTask() {
         // run once immediately at startup to purge any dangling instances
-        this.deleteExpiredInstances().catch((err: Error) =>
-            this.logger.error(`Failed to delete instances: ${err.message}`)
-        );
+        this.deleteExpiredInstances().catch((err: Error) => {
+            throw new Error(`Instance cleanup failed: ${err.message}`);
+        });
 
         setInterval(() => {
-            this.deleteExpiredInstances().catch((err: Error) =>
-                this.logger.error(`Failed to delete instances: ${err.message}`)
-            );
+            this.deleteExpiredInstances().catch((err: Error) => {
+                throw new Error(`Instance cleanup failed: ${err.message}`);
+            });
         }, 10 * 1000);
     }
 
