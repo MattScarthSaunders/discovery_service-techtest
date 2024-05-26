@@ -26,7 +26,7 @@ describe('ClientAppRouter', () => {
             const uuid = randomUUID();
             const request = supertest(app.httpServer.callback());
 
-            const res = await request.post(`/test/${uuid}`).send({ meta: {} });
+            const res = await request.post(`/test/${uuid}`).send();
 
             expect(res.body).to.have.keys([
                 'createdAt',
@@ -49,7 +49,7 @@ describe('ClientAppRouter', () => {
 
             const route = `/test/${uuid}`;
 
-            const res = await request.post(route).send({ meta: {} });
+            const res = await request.post(route).send();
             expect(res.body.meta).to.be.an('object');
             expect(res.body.meta).to.deep.equal({});
 
@@ -58,7 +58,7 @@ describe('ClientAppRouter', () => {
                 .send({ meta: { test: 123 } });
             expect(res2.body.meta).to.deep.equal({ test: 123 });
 
-            const res3 = await request.post(route).send({ meta: {} });
+            const res3 = await request.post(route).send();
             expect(res3.body.meta).to.be.an('object');
             expect(res3.body.meta).to.deep.equal({});
         });
@@ -67,12 +67,12 @@ describe('ClientAppRouter', () => {
             const uuid = randomUUID();
             const request = supertest(app.httpServer.callback());
 
-            const res = await request.post(`/test/${uuid}`).send({ meta: {} });
+            const res = await request.post(`/test/${uuid}`).send();
 
             const firstResId = res.body.id;
             const firstResUpdateTime = res.body.updatedAt;
 
-            const res2 = await request.post(`/test/${uuid}`).send({ meta: {} });
+            const res2 = await request.post(`/test/${uuid}`).send();
 
             expect(res2.body.id).to.equal(firstResId);
             expect(res2.body.updatedAt).not.to.equal(firstResUpdateTime);
@@ -84,7 +84,7 @@ describe('ClientAppRouter', () => {
 
             const res = await request
                 .post(`/test/whatIsThis?`)
-                .send({ meta: {} })
+                .send()
                 .expect(400);
 
             expect(res.body.message).to.equal(
@@ -97,7 +97,7 @@ describe('ClientAppRouter', () => {
 
             const res = await request
                 .post(`/test/test/threeTimesATester`)
-                .send({ meta: {} })
+                .send()
                 .expect(404);
 
             expect(res.body.message).to.equal('Route not found');

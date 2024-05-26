@@ -32,10 +32,11 @@ export class ClientAppRouter extends Router {
         @PathParam('group', { schema: { type: 'string' } }) group: string,
         @PathParam('id', { schema: { type: 'string', format: 'uuid' } })
         id: string,
-        @BodyParam('meta', { schema: { type: 'object' } })
+        @BodyParam('meta', { schema: { type: 'object', default: {} } })
         meta: MetaData
     ) {
         const res = await this.instances.upsertInstance(group, id, meta);
+
         this.ctx.status = 201;
         return res;
     }
@@ -50,7 +51,7 @@ export class ClientAppRouter extends Router {
         },
     })
     async getGroupSummary() {
-        return this.instances.getGroupSummary();
+        return await this.instances.getGroupSummary();
     }
 
     @Get({
@@ -65,21 +66,22 @@ export class ClientAppRouter extends Router {
     async getInstancesByGroup(
         @PathParam('group', { schema: { type: 'string' } }) group: string
     ) {
-        return this.instances.getInstancesByGroup(group);
+        return await this.instances.getInstancesByGroup(group);
     }
 
     @Delete({
         path: '/{group}/{id}',
         summary: 'Delete a given instance from a group.',
+        responses: { 204: {} },
     })
     async deleteInstance(
         @PathParam('group', { schema: { type: 'string' } }) group: string,
         @PathParam('id', { schema: { type: 'string', format: 'uuid' } })
         id: string
     ) {
-        const res = await this.instances.deleteInstance(group, id);
+        const result = await this.instances.deleteInstance(group, id);
 
-        if (res.deletedCount === 0) {
+        if (result.deletedCount === 0) {
             this.ctx.status = 404;
         } else {
             this.ctx.status = 204;
