@@ -22,6 +22,7 @@ export class ClientAppRouter extends Router {
     @Post({
         path: '/{group}/{id}',
         summary: 'Upsert a client app instance',
+
         responses: {
             201: {
                 schema: ClientAppResponse.schema,
@@ -32,7 +33,7 @@ export class ClientAppRouter extends Router {
         @PathParam('group', { schema: { type: 'string' } }) group: string,
         @PathParam('id', { schema: { type: 'string', format: 'uuid' } })
         id: string,
-        @BodyParam('meta', { schema: { type: 'object', default: {} } })
+        @BodyParam('meta', { schema: { type: 'object' } })
         meta: MetaData
     ) {
         const res = await this.instances.upsertInstance(group, id, meta);

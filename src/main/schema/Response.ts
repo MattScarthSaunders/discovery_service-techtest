@@ -16,7 +16,6 @@ export const MetaData = new Schema<MetaData>({
     schema: {
         type: 'object',
         properties: {},
-        optional: true,
     },
 });
 
