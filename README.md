@@ -66,21 +66,21 @@ Code formatting with prettier, linked to eslint config from ubio node framework.
 
 I have made the following assumptions for the sake of the test:
 
--   id on path param is always a uuid, as in the spec it resembles a uuid.
--   instances will always belong to a single group
+-   Id on path param is always a uuid, as in the spec it resembles a uuid.
+-   Instances will always belong to a single group
 
 ### Decisions
 
 -   Assuming a 30s heartbeat, I'm assigning a default expiry 'age' value of 3 minutes. This provides a balance between tolerating network instability, client load or other intermittent issues, and still ensuring that the service remains reasonably up-to-date. A longer expiry time would be more forgiving for network instability, however it could result in the list of instances not reflecting active services as accurately.
 -   Mongo structure:
 
-    -   single collection ('instances'), as all primary data is related to the client app instances, and group data is derived from this. Given small scope of the app and no specification for flexibility in group allocation, this seems appropriate.
+    -   Single collection ('instances'), as all primary data is related to the client app instances, and group data is derived from this. Given small scope of the app and no specification for flexibility in group allocation, this seems appropriate.
 
     Pros:
 
     -   Denormalised - doesn't require join-like queries, faster and simpler queries.
-    -   avoids excess storage of data
+    -   Avoids excess storage of data
 
     Cons:
 
-    -   no group history recorded.
+    -   No group history recorded.

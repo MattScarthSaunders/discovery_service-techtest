@@ -69,7 +69,7 @@ export class InstanceRepo {
     }
 
     async deleteInstance(group: string, id: string) {
-        const res = this.collection.deleteOne({ group, id });
-        return res;
+        const result = this.collection.deleteOne({ group, id });
+        return result;
     }
 }
