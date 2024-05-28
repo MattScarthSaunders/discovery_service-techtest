@@ -26,6 +26,7 @@ run_tests() {
   export NODE_ENV='test'
   export LOG_LEVEL='mute'
   export MONGO_URL='mongodb://localhost:27017/UBIO_techtest'
+  export MONGO_METRICS_ENABLED=false
   mocha
 }
 

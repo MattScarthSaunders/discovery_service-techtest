@@ -17,7 +17,7 @@
         "lint"
     ],
     "scripts": {
-        "start": "docker-compose -f docker/docker-compose.yml up",
+        "start": "docker-compose -f docker/docker-compose.yml up --build",
         "stop": "docker-compose -f docker/docker-compose.yml down",
         "dev": "bash scripts/run_dev.sh",
         "lint": "eslint --ext=.js,.ts --cache .",
