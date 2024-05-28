@@ -31,7 +31,6 @@ services:
         environment:
             - MONGO_URL=mongodb://mongodb_techtest:27017/UBIO_techtest
             - PORT=3001
-            - EXPIRY_TIME_MS=10000
             - LOG_PRETTY=true
             - MONGO_METRICS_ENABLED=false
 
@@ -44,6 +43,5 @@ services:
         environment:
             - MONGO_URL=mongodb://mongodb_techtest:27017/UBIO_techtest
             - PORT=3002
-            - EXPIRY_TIME_MS=10000
             - LOG_PRETTY=true
             - MONGO_METRICS_ENABLED=false
