@@ -46,7 +46,7 @@ Handy example UUID copy/paste: `e335175a-eace-4a74-b99c-c6466b6afadd`
 
 ## Stop App
 
-If running locally, kill the app in the terminal with your usual command (probably `ctrl+c`), then run `npm stop` to stop and remove docker services.
+If running locally, kill the app in the terminal with your usual command (probably `ctrl+c`), then run `npm run clear` to remove docker services.
 
 ## Run Dev
 
