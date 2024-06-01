@@ -4,7 +4,7 @@ export interface MetaData {
     [key: string]: any;
 }
 
-export interface ClientApp {
+export interface Instance {
     id: string;
     group: string;
     createdAt: number;
@@ -19,7 +19,7 @@ export const MetaData = new Schema<MetaData>({
     },
 });
 
-export const ClientAppResponse = new Schema<ClientApp>({
+export const ClientAppResponse = new Schema<Instance>({
     schema: {
         type: 'object',
         properties: {
@@ -32,7 +32,7 @@ export const ClientAppResponse = new Schema<ClientApp>({
     },
 });
 
-export const GroupResponse = new Schema<ClientApp[]>({
+export const GroupResponse = new Schema<Instance[]>({
     schema: {
         type: 'array',
         items: {

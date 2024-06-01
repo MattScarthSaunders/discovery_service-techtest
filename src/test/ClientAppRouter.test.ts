@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import supertest from 'supertest';
 
 import { App } from '../main/app.js';
-import { ClientApp, GroupSummary } from '../main/schema/Response.js';
+import { GroupSummary, Instance } from '../main/schema/Response.js';
 import { ClientAppSeed } from './seed/ClientAppSeed.js';
 
 describe('ClientAppRouter', () => {
@@ -15,11 +15,19 @@ describe('ClientAppRouter', () => {
     afterEach(async () => await app.stop());
 
     describe('Post /:group/:id', () => {
-        it('Has status: 201', async () => {
+        it('Has status: 201 on create', async () => {
             const request = supertest(app.httpServer.callback());
             const uuid = randomUUID();
 
             await request.post(`/test/${uuid}`).send({ meta: {} }).expect(201);
+        });
+
+        it('Has status: 200 on update', async () => {
+            const request = supertest(app.httpServer.callback());
+            const uuid = randomUUID();
+
+            await request.post(`/test/${uuid}`).send({ meta: {} }).expect(201);
+            await request.post(`/test/${uuid}`).send({ meta: {} }).expect(200);
         });
 
         it('Returns correct response body', async () => {
@@ -224,7 +232,7 @@ describe('ClientAppRouter', () => {
             const request = supertest(app.httpServer.callback());
             const res = await request.get('/particle-accelerator');
 
-            res.body.forEach((instance: ClientApp) => {
+            res.body.forEach((instance: Instance) => {
                 expect(instance.group).to.equal('particle-accelerator');
             });
         });
@@ -266,7 +274,7 @@ describe('ClientAppRouter', () => {
             const updatedGroup = await request.get('/particle-accelerator');
 
             const instance = updatedGroup.body.find(
-                (el: ClientApp) => el.id === toDelete.id
+                (el: Instance) => el.id === toDelete.id
             );
 
             expect(instance).to.equal(undefined);

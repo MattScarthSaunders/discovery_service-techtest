@@ -7,6 +7,8 @@ import { ClientAppRouter } from './routes/ClientAppRouter.js';
 import { InstanceCleanupService } from './services/InstanceCleanupService.js';
 
 export class App extends Application {
+    cleanupService = this.mesh.resolve(InstanceCleanupService);
+
     @dep() private mongoDb!: MongoDb;
 
     override createGlobalScope() {
@@ -27,11 +29,16 @@ export class App extends Application {
         await this.mongoDb.start();
         this.logger.info(`Created DB: ${this.mongoDb.db.databaseName}`);
 
+        await this.cleanupService.deleteExpiredInstances();
+        await this.cleanupService.startTask();
+
         await this.httpServer.startServer();
     }
 
     override async afterStop() {
         await this.httpServer.stopServer();
+
+        this.cleanupService.stopTask();
 
         await this.mongoDb.stop();
     }

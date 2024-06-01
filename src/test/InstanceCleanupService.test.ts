@@ -2,14 +2,13 @@ import { expect } from 'chai';
 import supertest from 'supertest';
 
 import { App } from '../main/app.js';
-import { InstanceCleanupService } from '../main/services/InstanceCleanupService.js';
 import { ClientAppSeed } from './seed/ClientAppSeed.js';
 
 describe('InstanceCleanupService', () => {
     const app = new App();
     app.mesh.service(ClientAppSeed);
     const seed = app.mesh.resolve(ClientAppSeed);
-    const cleanupService = app.mesh.resolve(InstanceCleanupService);
+    // const cleanupService = app.mesh.resolve(InstanceCleanupService);
 
     beforeEach(async () => {
         await app.start();
@@ -27,7 +26,7 @@ describe('InstanceCleanupService', () => {
 
         expect(res.body.length).to.equal(6);
 
-        await cleanupService.deleteExpiredInstances();
+        await app.cleanupService.deleteExpiredInstances();
 
         const res2 = await request.get('/');
         expect(res2.body.length).to.equal(0);
@@ -41,9 +40,9 @@ describe('InstanceCleanupService', () => {
 
         await request
             .post(`/${res.body[0].group}/${res.body[0].id}`)
-            .expect(201)
+            .expect(200)
             .send({ meta: {} });
-        await cleanupService.deleteExpiredInstances();
+        await app.cleanupService.deleteExpiredInstances();
 
         const res2 = await request.get('/particle-accelerator');
         expect(res2.body.length).to.equal(1);

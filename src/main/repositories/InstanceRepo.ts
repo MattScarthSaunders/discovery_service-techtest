@@ -62,14 +62,15 @@ export class InstanceRepo {
     }
 
     async getInstancesByGroup(group: string) {
-        const result = this.collection
+        const result = await this.collection
             .find({ group }, { projection: { _id: 0 } })
             .toArray();
         return result;
     }
 
     async deleteInstance(group: string, id: string) {
-        const result = this.collection.deleteOne({ group, id });
+        const result = await this.collection.deleteOne({ group, id });
+
         return result;
     }
 }

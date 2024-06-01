@@ -13,6 +13,7 @@ import {
     ClientAppResponse,
     GroupResponse,
     GroupSummaryResponse,
+    Instance,
     MetaData,
 } from '../schema/Response.js';
 
@@ -22,8 +23,10 @@ export class ClientAppRouter extends Router {
     @Post({
         path: '/{group}/{id}',
         summary: 'Upsert a client app instance',
-
         responses: {
+            200: {
+                schema: ClientAppResponse.schema,
+            },
             201: {
                 schema: ClientAppResponse.schema,
             },
@@ -38,7 +41,12 @@ export class ClientAppRouter extends Router {
     ) {
         const res = await this.instances.upsertInstance(group, id, meta);
 
-        this.ctx.status = 201;
+        const instance: Instance = JSON.parse(JSON.stringify(res));
+
+        if (instance.createdAt === instance.updatedAt) {
+            this.ctx.status = 201;
+        }
+
         return res;
     }
 

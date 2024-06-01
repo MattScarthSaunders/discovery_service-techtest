@@ -33,6 +33,7 @@ services:
             - PORT=3001
             - LOG_PRETTY=true
             - MONGO_METRICS_ENABLED=false
+            - EXPIRY_TIME_MS=10000
 
     # Additional discovery service instances can be appended as below, or deployed separately.
 
@@ -45,3 +46,4 @@ services:
             - PORT=3002
             - LOG_PRETTY=true
             - MONGO_METRICS_ENABLED=false
+            - EXPIRY_TIME_MS=10000
